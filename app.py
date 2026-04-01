@@ -5,7 +5,7 @@ import sqlite3
 app = Flask(__name__)
 CORS(app)
 
-DB = "database.db"
+DB = "/tmp/database.db"
 
 def get_db():
     conn = sqlite3.connect(DB)
@@ -130,6 +130,8 @@ def auto_complete_bookings():
 # ---------------- REGISTER ----------------
 @app.route("/register", methods=["POST"])
 def register():
+    print("REGISTER HIT")
+    print(request.json)
     data = request.json
     db = get_db()
 
@@ -212,7 +214,9 @@ def search_equipment():
         ORDER BY avg_rating DESC
         """, (f"%{q}%", f"%{q}%")).fetchall()
 
-    return jsonify([dict(r) for r in rows])
+    return jsonify({
+        "status":"success",
+        "data":[dict(r) for r in rows]})
 
 # ---------------- BOOK EQUIPMENT ----------------
 from datetime import datetime, timedelta
